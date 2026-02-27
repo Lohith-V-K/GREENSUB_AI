@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GreenSub AI - Dashboard</title>
+    <title>GreenSub AI - Analysis History</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -24,7 +24,7 @@
             </div>
 
             <ul class="nav-links">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a href="index.html" class="nav-link">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -48,7 +48,7 @@
                         Analyze
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a href="history.html" class="nav-link">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -94,20 +94,18 @@
             <!-- --- Top Header --- -->
             <header class="top-header">
                 <div class="header-title">
-                    <h1>Dashboard</h1>
-                    <p id="welcomeText">Welcome, Researcher</p>
+                    <h1>Analysis History</h1>
+                    <p>View your past chemical analyses</p>
                 </div>
 
                 <div class="header-actions">
-                    <div class="search-container" style="position:relative;">
+                    <div class="search-container">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
-                        <input type="text" id="globalSearch" class="search-input"
-                            placeholder="Search chemicals, reports..." autocomplete="off">
-                        <div class="search-dropdown" id="searchDropdown"></div>
+                        <input type="text" class="search-input" id="historySearch" placeholder="Search history...">
                     </div>
 
                     <div class="notification-container" id="notifContainer">
@@ -136,118 +134,64 @@
                 </div>
             </header>
 
-            <!-- --- Dashboard Grid --- -->
-            <div class="dashboard-grid">
+            <!-- --- History Content --- -->
+            <div class="history-wrapper">
 
-                <!-- Analytics Cards Row -->
-                <section class="analytics-cards">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="icon-bubble">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                                </svg>
-                            </div>
-                            Chemicals Analyzed
-                        </div>
-                        <div class="card-body">
-                            <h2 id="dashTotal">—</h2>
-                            <span class="trend up" id="dashTotalTrend"></span>
-                        </div>
-                    </div>
+                <!-- Loading State -->
+                <div class="history-loading" id="historyLoading">
+                    <div class="spinner"></div>
+                    <p style="color:var(--text-muted); font-weight:500;">Loading analysis history...</p>
+                </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="icon-bubble" style="color:var(--safe); background:rgba(46, 202, 127, 0.1);">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                                    <line x1="9" y1="9" x2="9.01" y2="9" />
-                                    <line x1="15" y1="9" x2="15.01" y2="9" />
-                                </svg>
-                            </div>
-                            Avg Toxicity Score
-                        </div>
-                        <div class="card-body">
-                            <h2 id="dashAvgTox">—</h2>
-                            <span class="trend down" id="dashToxTrend"></span>
-                        </div>
-                    </div>
+                <!-- Empty State -->
+                <div class="history-empty" id="historyEmpty" style="display:none;">
+                    <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="var(--text-muted)"
+                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4;">
+                        <polyline points="12 8 12 12 14 14" />
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                    <h3 style="margin-top:16px; color:var(--text-main);">No Analyses Yet</h3>
+                    <p style="color:var(--text-muted); max-width:360px; margin:8px auto 24px;">
+                        Your chemical analysis history will appear here. Start by analyzing a chemical on the
+                        <a href="analyze.html" style="color:var(--primary);">Analyze</a> page.
+                    </p>
+                    <a href="analyze.html" class="btn-primary btn-submit"
+                        style="display:inline-flex; text-decoration:none;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            <line x1="11" y1="8" x2="11" y2="14" />
+                            <line x1="8" y1="11" x2="14" y2="11" />
+                        </svg>
+                        Analyze a Chemical
+                    </a>
+                </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="icon-bubble" style="color:var(--primary); background:rgba(31, 175, 154, 0.1);">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                                </svg>
-                            </div>
-                            Eco Rating
-                        </div>
-                        <div class="card-body">
-                            <h2 id="dashAvgEco">—</h2>
-                            <span class="trend up" id="dashEcoTrend"></span>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="icon-bubble" style="color:var(--text-main); background:rgba(0,0,0,0.05);">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                                </svg>
-                            </div>
-                            Avg Performance
-                        </div>
-                        <div class="card-body">
-                            <h2 id="dashAvgPerf">—</h2>
-                            <span class="trend neutral" id="dashPerfTrend">Stable</span>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Main Graph Section -->
-                <section class="charts-section">
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Toxicity Trend Analysis</h3>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="toxicityChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Alternative Performance Comparison</h3>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="performanceChart"></canvas>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Recent Activity Section -->
-                <section class="activity-section">
-                    <div class="activity-header">
-                        <h3>Recent Activity</h3>
-                        <a href="history.html" class="view-all">View All</a>
-                    </div>
-
-                    <div class="activity-list" id="dashActivityList">
-                        <div class="notif-empty" style="padding:32px;">Loading activity...</div>
-                    </div>
-                </section>
+                <!-- History Table -->
+                <div class="history-table-container" id="historyTableContainer" style="display:none;">
+                    <div class="history-stats" id="historyStats"></div>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Chemical Name</th>
+                                <th>Formula</th>
+                                <th>Industry</th>
+                                <th>Toxicity</th>
+                                <th>Eco Score</th>
+                                <th>Performance</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
 
             </div>
         </main>
-
-
-
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="supabase-config.js"></script>
     <script src="script.js"></script>
 </body>

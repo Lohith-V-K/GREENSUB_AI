@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const Analysis = require('../models/Analysis');
 
 // ===== PubChem API Integration =====
 // Uses PubChem PUG REST API (free, no API key needed)
@@ -67,8 +69,8 @@ router.post('/', async (req, res) => {
             // Similarity search may fail for some compounds
         }
 
-        // Step 5: Return full analysis
-        res.json({
+        // Step 5: Build response
+        const result = {
             compound: {
                 name: chemicalName || props.IUPACName || 'Unknown Compound',
                 iupacName: props.IUPACName || 'N/A',
@@ -89,7 +91,37 @@ router.post('/', async (req, res) => {
             },
             hazardStatements: hazardStatements.slice(0, 5),
             alternatives: alternatives
-        });
+        };
+
+        // Step 6: Save to history if user is authenticated
+        try {
+            const authHeader = req.headers.authorization;
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                const token = authHeader.split(' ')[1];
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                await Analysis.create({
+                    userId: decoded.id,
+                    chemicalName: result.compound.name,
+                    smiles: smiles,
+                    industry: industry || 'general',
+                    compound: {
+                        name: result.compound.name,
+                        iupacName: result.compound.iupacName,
+                        formula: result.compound.formula,
+                        cid: result.compound.cid,
+                        molecularWeight: result.compound.molecularWeight,
+                        xLogP: result.compound.xLogP
+                    },
+                    scores: result.scores,
+                    hazardStatements: result.hazardStatements,
+                    alternativesCount: result.alternatives.length
+                });
+            }
+        } catch (saveErr) {
+            console.warn('Could not save to history:', saveErr.message);
+        }
+
+        res.json(result);
 
     } catch (error) {
         console.error('Analyze error:', error);

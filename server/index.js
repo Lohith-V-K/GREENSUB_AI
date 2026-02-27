@@ -5,6 +5,7 @@ const path = require('path');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const analyzeRoutes = require('./routes/analyze');
+const historyRoutes = require('./routes/history');
 
 const app = express();
 const PORT = process.env.PORT || 5500;
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, '..')));
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/analyze', analyzeRoutes);
+app.use('/api/history', historyRoutes);
 
 // Fallback: serve auth.html for root
 app.get('/', (req, res) => {
